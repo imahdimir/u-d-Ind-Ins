@@ -4,11 +4,7 @@
 
 from pathlib import Path
 
-from mirutil.ns import rm_ns_module
-from mirutil.ns import update_ns_module
-
-update_ns_module()
-import ns
+from namespace_mahdimir import tse as ns
 
 # namespace
 c = ns.Col()
@@ -56,7 +52,6 @@ def main() :
     _2_upload_data_on_github.main()
 
     ##
-    rm_ns_module()
 
 ##
 
@@ -64,62 +59,3 @@ def main() :
 if __name__ == "__main__" :
     main()
     print(f'{Path(__file__).name} Done!')
-
-##
-from nested_namespace import NestedNamespace
-
-x = NestedNamespace()
-
-x.some_attr = {
-        'a'    : {
-                'b' : 'c'
-                } ,
-        'will' : 'be transformed'
-        }
-
-x
-
-##
-fp = '/Users/mahdi/Dropbox/GitHub/u-d-Ins-Ind/DAllCodalLetters.json'
-
-import json
-
-with open(fp , 'r') as f :
-    y = json.load(f)
-
-##
-type(y)
-
-##
-x = NestedNamespace()
-
-x = x.transform(y)
-x
-##
-x.DAllCodalLetters = NestedNamespace().transform(y)
-
-##
-x.DAllCodalLetters.as_dict()
-
-##
-x1 = x.DAllCodalLetters
-
-x1
-
-##
-(x1.TracingNo)
-x1.TracingNo1
-x1.TracingNon
-
-##
-x.DAllCodalLetters.s1 = 'some string'
-
-##
-x.s1 = NestedNamespace()
-
-##
-x.s1.s2 = 'some other string'
-
-##
-
-##
