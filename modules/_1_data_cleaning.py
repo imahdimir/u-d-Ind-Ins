@@ -5,13 +5,15 @@
 from pathlib import Path
 
 import pandas as pd
+from namespace_mahdimir import tse as ns
 from persiantools.jdatetime import JalaliDateTime
 
 from main import c
 from main import cn
 from main import fpn
-from main import gdu
-from main import k
+
+# namespace %%%%%%%%%%%%%%%%%%%%
+cd = ns.DInsIndCols()
 
 def split_into_df_cols(res_text) :
     df = pd.DataFrame(res_text.split(';'))
@@ -34,6 +36,91 @@ def split_all_rows(dft) :
 
     return df
 
+def rename_cols(df) :
+    cns = {
+            '0'  : c.d ,
+
+            '1'  : cd.bdc ,
+            '2'  : cd.bsc ,
+            '3'  : cd.sdc ,
+            '4'  : cd.ssc ,
+
+            '5'  : cd.bdv ,
+            '6'  : cd.bsv ,
+            '7'  : cd.sdv ,
+            '8'  : cd.ssv ,
+
+            '9'  : cd.bdva ,
+            '10' : cd.bsva ,
+            '11' : cd.sdva ,
+            '12' : cd.ssva ,
+
+            }
+
+    return df.rename(columns = cns)
+
+def remove_nan_rows(df) :
+    cols = df.columns.difference([c.ftic , c.tse_id])
+    return df.dropna(subset = cols)
+
+def check_all_vals_are_notna(df) :
+    msk = df.isna().any(axis = 1)
+    df1 = df[msk]
+
+    assert df1.empty , 'there are some nan values'
+
+def check_date_vals_and_make_jdate(df) :
+    df[c.d] = pd.to_datetime(df[c.d] , format = '%Y%m%d')
+
+    df[c.jd] = df[c.d].apply(JalaliDateTime.to_jalali)
+
+    df[c.jd] = df[c.jd].apply(lambda x : x.strftime('%Y-%m-%d'))
+    df[c.d] = df[c.d].apply(lambda x : x.strftime('%Y-%m-%d'))
+
+    return df
+
+def add_today_date(df) :
+    tod_date = JalaliDateTime.today().strftime('%Y-%m-%d')
+    # tod_date = '1402-03-09'  # manually set
+    df[c.get_date] = tod_date
+    return df
+
+def check_ftick_date_is_unique_mostly(df) :
+    msk = df.duplicated(subset = [c.ftic , c.d] , keep = False)
+    df1 = df[msk]
+
+    assert len(df1) < 30
+
+    return df[~ msk]
+
+def reorder_cols(df) :
+    col_ord = {
+            c.get_date : None ,
+
+            c.ftic     : None ,
+            c.tse_id   : None ,
+
+            c.d        : None ,
+            c.jd       : None ,
+
+            cd.bdc     : None ,
+            cd.bsc     : None ,
+            cd.sdc     : None ,
+            cd.ssc     : None ,
+
+            cd.bdv     : None ,
+            cd.bsv     : None ,
+            cd.sdv     : None ,
+            cd.ssv     : None ,
+
+            cd.bdva    : None ,
+            cd.bsva    : None ,
+            cd.sdva    : None ,
+            cd.ssva    : None ,
+            }
+
+    return df[col_ord.keys()]
+
 def main() :
     pass
 
@@ -50,74 +137,33 @@ def main() :
     df = pd.read_parquet(fpn.t2)
 
     ##
-    cns = {
-            0 : c.d ,
-            1 : c.ahi ,
-            2 : c.alow ,
-            3 : c.aopen ,
-            4 : c.aclose ,
-            5 : c.vol ,
-            6 : c.alast ,
-            }
-
-    dfp = dfp.rename(columns = cns)
+    df = rename_cols(df)
 
     ##
-    pat = r'\d{4}\d{2}\d{2}'
-    msk = ~ dfp[c.d].str.fullmatch(pat)
-
-    df1 = dfp[msk]
+    df = remove_nan_rows(df)
 
     ##
-    dfp = dfp[~ msk]
+    df = df.drop_duplicates()
 
     ##
-    msk = dfp.isna().any(axis = 1)
-    df1 = dfp[msk]
-
-    assert df1.empty
+    check_all_vals_are_notna(df)
 
     ##
-    dfp[c.d] = pd.to_datetime(dfp[c.d] , format = '%Y%m%d')
+    df = check_date_vals_and_make_jdate(df)
 
     ##
-    dfp[c.jd] = dfp[c.d].apply(JalaliDateTime.to_jalali)
+    df = add_today_date(df)
 
     ##
-    dfp[c.jd] = dfp[c.jd].apply(lambda x : x.strftime('%Y-%m-%d'))
+    df = check_ftick_date_is_unique_mostly(df)
 
     ##
-    dfp[c.d] = dfp[c.d].apply(lambda x : x.strftime('%Y-%m-%d'))
+    df = reorder_cols(df)
 
     ##
-    tod_date = JalaliDateTime.today().strftime('%Y-%m-%d')
-    dfp[cn.get_date] = tod_date
+    df.to_parquet('temp_data/t3.prq' , index = False)
 
     ##
-    msk = dfp.duplicated(subset = [c.ftic , c.d] , keep = False)
-    df1 = dfp[msk]
-
-    assert df1.empty
-
-    ##
-    col_ord = {
-            cn.get_date : None ,
-            c.tse_id    : None ,
-            c.ftic      : None ,
-            c.d         : None ,
-            c.jd        : None ,
-            c.aopen     : None ,
-            c.ahi       : None ,
-            c.alow      : None ,
-            c.alast     : None ,
-            c.vol       : None ,
-            c.aclose    : None ,
-            }
-
-    dfp = dfp[col_ord.keys()]
-
-    ##
-    dfp.to_parquet(fps , index = False)
 
 ##
 
