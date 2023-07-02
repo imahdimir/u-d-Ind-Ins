@@ -44,19 +44,18 @@ def main() :
     pass
 
     ##
+    from modules import _0_get_all_data
     from modules import _1_data_cleaning
     from modules import _2_upload_data_on_github
 
     ##
-    _0_get_adj_prices.main()
+    _0_get_all_data.main()
 
     ##
     _1_data_cleaning.main()
 
     ##
     _2_upload_data_on_github.main()
-
-    ##
 
 ##
 
