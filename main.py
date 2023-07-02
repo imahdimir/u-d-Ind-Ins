@@ -11,8 +11,13 @@ update_ns_module()
 import ns
 
 # namespace
-gdu = ns.GDU()
 c = ns.Col()
+
+class GDU :
+    slf = "https://github.com/imahdimir/u-d-Ins-Ind"
+    src_ids = "https://github.com/imahdimir/d-TSETMC_ID-2-Ticker"
+
+gdu = GDU()
 
 # classes
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,9 +44,8 @@ def main() :
     pass
 
     ##
-    import _0_get_all_data
-    import _1_data_cleaning
-    import _2_upload_data_on_github
+    from modules import _1_data_cleaning
+    from modules import _2_upload_data_on_github
 
     ##
     _0_get_adj_prices.main()
