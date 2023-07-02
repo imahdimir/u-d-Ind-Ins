@@ -4,16 +4,18 @@
 
 from pathlib import Path
 
+from namespace_mahdimir import github_data_url as mgdu
 from namespace_mahdimir import tse as ns
 
 # namespace
 c = ns.Col()
 
-# classes
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# class %%%%%%%%%%%%%%%%%%%%
 class GDU :
-    slf = "https://github.com/imahdimir/u-d-Ins-Ind"
-    src_ids = "https://github.com/imahdimir/d-TSETMC_ID-2-Ticker"
+    g = mgdu.GitHubDataUrl()
+
+    slf = g.u_d_ins_ind
+    src_ids = g.d_tsetmc_id_2_ticker
 
 class FPN :
     # temp data files
@@ -28,8 +30,7 @@ class ColName :
     url = 'url'
     res_txt = 'res_text'
 
-# classes instances
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# class instances   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gdu = GDU()
 fpn = FPN()
 cn = ColName()

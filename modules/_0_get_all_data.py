@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 import requests
-from githubdata import GitHubDataRepo , get_data_from_github
+from githubdata import get_data_from_github
 from mirutil.const import Const as MConst
 
 from main import c
