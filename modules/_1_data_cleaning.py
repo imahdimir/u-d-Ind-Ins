@@ -5,15 +5,12 @@
 from pathlib import Path
 
 import pandas as pd
-from namespace_mahdimir import tse as ns
 from persiantools.jdatetime import JalaliDateTime
 
 from main import c
+from main import cd
 from main import cn
 from main import fpn
-
-# namespace %%%%%%%%%%%%%%%%%%%%
-cd = ns.DInsIndCols()
 
 def split_into_df_cols(res_text) :
     df = pd.DataFrame(res_text.split(';'))
@@ -79,12 +76,6 @@ def check_date_vals_and_make_jdate(df) :
 
     return df
 
-def add_today_date(df) :
-    tod_date = JalaliDateTime.today().strftime('%Y-%m-%d')
-    # tod_date = '1402-03-09'  # manually set
-    df[c.get_date] = tod_date
-    return df
-
 def check_ftick_date_is_unique_mostly(df) :
     msk = df.duplicated(subset = [c.ftic , c.d] , keep = False)
     df1 = df[msk]
@@ -92,34 +83,6 @@ def check_ftick_date_is_unique_mostly(df) :
     assert len(df1) < 30
 
     return df[~ msk]
-
-def reorder_cols(df) :
-    col_ord = {
-            c.get_date : None ,
-
-            c.ftic     : None ,
-            c.tse_id   : None ,
-
-            c.d        : None ,
-            c.jd       : None ,
-
-            cd.bdc     : None ,
-            cd.bsc     : None ,
-            cd.sdc     : None ,
-            cd.ssc     : None ,
-
-            cd.bdv     : None ,
-            cd.bsv     : None ,
-            cd.sdv     : None ,
-            cd.ssv     : None ,
-
-            cd.bdva    : None ,
-            cd.bsva    : None ,
-            cd.sdva    : None ,
-            cd.ssva    : None ,
-            }
-
-    return df[col_ord.keys()]
 
 def main() :
     pass
@@ -152,18 +115,10 @@ def main() :
     df = check_date_vals_and_make_jdate(df)
 
     ##
-    df = add_today_date(df)
-
-    ##
     df = check_ftick_date_is_unique_mostly(df)
 
     ##
-    df = reorder_cols(df)
-
-    ##
     df.to_parquet('temp_data/t3.prq' , index = False)
-
-    ##
 
 ##
 
