@@ -7,10 +7,6 @@ from pathlib import Path
 from namespace_mahdimir import github_data_url as mgdu
 from namespace_mahdimir import tse as ns
 
-# namespace
-c = ns.Col()
-cd = ns.DInsIndCols()
-
 # class %%%%%%%%%%%%%%%%%%%%
 class GDU :
     g = mgdu.GitHubDataUrl()
@@ -39,6 +35,10 @@ gdu = GDU()
 fpn = FPN()
 cn = ColName()
 k = Const()
+
+# namespace  %%%%%%%%%%%%%%%
+c = ns.Col()
+cd = ns.DInsIndCols()
 
 def main() :
     pass
