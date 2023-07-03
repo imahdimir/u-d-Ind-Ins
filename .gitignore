@@ -3,6 +3,7 @@ venv
 .idea
 temp_data
 .vscode
+paper
 
 # General
 .DS_Store
