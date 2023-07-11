@@ -2,24 +2,26 @@
 
     """
 
-import shutil
 from pathlib import Path
 
 import pandas as pd
 from githubdata import GitHubDataRepo
+from mirutil.df import save_df_as_prq
 from persiantools.jdatetime import JalaliDateTime
 
-from main import fpn , gdu , c , cd
+from main import c
+from main import cd
+from main import fpn
+from main import gdu
 
 def clone_target_repo() :
     gdt = GitHubDataRepo(gdu.trg)
     gdt.clone_overwrite()
-
     return gdt
 
 def add_today_date(df) :
     tod_date = JalaliDateTime.today().strftime('%Y-%m-%d')
-    tod_date = '1402-03-09'  # manually set
+    # tod_date = '1402-03-09'  # manually set
     df[c.get_date] = tod_date
     return df
 
@@ -84,10 +86,10 @@ def main() :
 
     ##
     tjd = JalaliDateTime.now().strftime('%Y-%m-%d')
-    fp = gdt.local_path / f'Ins-Ind-{tjd}.prq'
+    fp = gdt.local_path / f'{tjd}.prq'
 
     ##
-    df.to_parquet(fp , index = False)
+    save_df_as_prq(df , fp)
 
     ##
     msg = 'Updated on ' + tjd
@@ -95,9 +97,6 @@ def main() :
 
     ##
     gdt.commit_and_push(msg , branch = 'main')
-
-    ##
-    gdt.rmdir()
 
     ##
 
@@ -113,8 +112,5 @@ if False :
     pass
 
     ##
-    fp = '/Users/mahdi/Dropbox/GitHub/u-d-Adj-Prices/d-Adj-Prices/Adj-Prices-1401-10-21.prq'
-
-    df = pd.read_parquet(fp)
 
     ##

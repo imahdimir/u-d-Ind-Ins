@@ -7,8 +7,9 @@ from pathlib import Path
 
 import pandas as pd
 import requests
-from githubdata import get_data_from_github
+from githubdata import GitHubDataRepo as GDR
 from mirutil.const import Const as MConst
+from mirutil.df import save_df_as_prq
 
 from main import c
 from main import cn
@@ -20,7 +21,8 @@ mk = MConst()
 
 def get_all_firm_ids() :
     """ get all TSETMC ids """
-    df = get_data_from_github(gdu.src_ids)
+    gdr = GDR(gdu.src_ids)
+    df = gdr.read_data()
     df = df.astype('string')
     return df
 
@@ -81,8 +83,8 @@ def main() :
         # break
 
     ##
-    # save temp data
-    df.to_parquet(fpn.t1 , index = False)
+    # save temp data without index
+    save_df_as_prq(df , fpn.t0)
 
     ##
 
@@ -100,28 +102,9 @@ if False :
     pass
 
     ##
-    gd = GitHubDataRepo(gdu.src_ids)
-    gd.clone_overwrite()
+    def test() :
+        pass
 
-    ##
-    df = gd.read_data()
+        ##
 
-    ##
-    df = get_data_from_github(gdu.src_ids)
-
-    ##
-    x = '10331088713418617'
-    x = 'http://old.tsetmc.com/tsev2/data/clienttype.aspx?i=28797257472175528'
-
-    ##
-    x = 'http://cdn.tsetmc.com/api/ClientType/GetClientType/28797257472175528/1/0'
-
-    ##
-    r = requests.get(x , headers = mk.headers)
-    r.text
-
-    ##
-
-    ##
-
-    ##
+        ##

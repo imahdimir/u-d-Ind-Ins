@@ -2,25 +2,44 @@
 
     """
 
+import shutil
 from pathlib import Path
 
-from namespace_mahdimir import github_data_url as mgdu
-from namespace_mahdimir import tse as ns
+from githubdata import default_containing_dir
+from mirutil.run_modules import run_modules_from_dir_in_order
+from namespace_mahdimir import tse as tse_ns
+from namespace_mahdimir import tse_github_data_url as tgdu
 
-# class %%%%%%%%%%%%%%%%%%%%
+# namespace     %%%%%%%%%%%%%%%
+c = tse_ns.Col()
+cd = tse_ns.DInsIndCols()
+
+# class         %%%%%%%%%%%%%%%
 class GDU :
-    g = mgdu.GitHubDataUrl()
+    g = tgdu.GitHubDataUrl()
 
-    slf = g.u_d_ins_ind
-    src_ids = g.d_tsetmc_id_2_ticker
-    trg = g.d_ins_ind
+    slf = tgdu.m + 'u-d-Ind-Ins'
+
+    src_ids = g.id_2_tic
+    trg = g.ind_ins
+
+class Dirs :
+    md = Path('modules/')
+    md.mkdir(exist_ok = True)
+
+    gd = default_containing_dir
+
+    td = Path('temp_data/')
+    td.mkdir(exist_ok = True)
 
 class FPN :
+    dyr = Dirs()
+    td = dyr.td
+
     # temp data files
-    t1 = Path('temp_data/t1.prq')
-    t2 = Path('temp_data/t2.prq')
-    t3 = Path('temp_data/t3.prq')
-    t4 = Path('temp_data/t4.prq')
+    t0 = td / 't0.prq'
+    t1_0 = td / 't1_0.prq'
+    t1_1 = td / 't1_1.prq'
 
 class Const :
     # institutional & individual ownership url format
@@ -32,30 +51,30 @@ class ColName :
 
 # class instances   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gdu = GDU()
+dyr = Dirs()
 fpn = FPN()
 cn = ColName()
 k = Const()
 
-# namespace  %%%%%%%%%%%%%%%
-c = ns.Col()
-cd = ns.DInsIndCols()
+def clean_cache() :
+    print('cleaning cache ...')
+
+    dyrs = {
+            dyr.gd : None ,
+            dyr.td : None ,
+            }
+
+    for di in dyrs.keys() :
+        shutil.rmtree(di , ignore_errors = True)
 
 def main() :
     pass
 
     ##
-    from modules import _0_get_all_data
-    from modules import _1_data_cleaning
-    from modules import _2_upload_data_on_github
+    run_modules_from_dir_in_order(dyr.md)
 
     ##
-    _0_get_all_data.main()
-
-    ##
-    _1_data_cleaning.main()
-
-    ##
-    _2_upload_data_on_github.main()
+    clean_cache()
 
 ##
 
@@ -63,3 +82,21 @@ def main() :
 if __name__ == "__main__" :
     main()
     print(f'{Path(__file__).name} Done!')
+
+##
+
+
+if False :
+    pass
+
+    ##
+    def test() :
+        pass
+
+        ##
+
+        ##
+
+        ##
+
+##

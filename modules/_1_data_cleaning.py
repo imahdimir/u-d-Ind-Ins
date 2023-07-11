@@ -5,6 +5,7 @@
 from pathlib import Path
 
 import pandas as pd
+from mirutil.df import save_df_as_prq
 from persiantools.jdatetime import JalaliDateTime
 
 from main import c
@@ -88,16 +89,16 @@ def main() :
     pass
 
     ##
-    dft = pd.read_parquet(fpn.t1)
+    dft = pd.read_parquet(fpn.t0)
 
     ##
     df = split_all_rows(dft)
 
     ##
-    df.to_parquet(fpn.t2 , index = False)
+    save_df_as_prq(df , fpn.t1_0)
 
     ##
-    df = pd.read_parquet(fpn.t2)
+    df = pd.read_parquet(fpn.t1_0)
 
     ##
     df = rename_cols(df)
@@ -118,7 +119,7 @@ def main() :
     df = check_ftick_date_is_unique_mostly(df)
 
     ##
-    df.to_parquet('temp_data/t3.prq' , index = False)
+    save_df_as_prq(df , fpn.t1_1)
 
 ##
 
@@ -133,16 +134,5 @@ if False :
     pass
 
     ##
-    # 1 row case
-    # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    df = pd.read_parquet(fpn.t1)
-
-    ##
-    r0 = df.loc[0 , cn.res_txt]
-
-    df1 = pd.DataFrame(r0.split(';'))
-
-    ##
-    df2 = df1[0].str.split(',' , expand = True)
 
     ##
